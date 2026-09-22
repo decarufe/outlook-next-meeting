@@ -8,3 +8,5 @@
 ## Learnings
 
 <!-- Append new learnings below. Each entry is something lasting about the project. -->
+- 2026-09-22T10:37:31-04:00 — Architecture ready in docs\architecture.md; suggested first task: spike MSAL + Graph /me/calendarView in a minimal packaged app; confirm redirect URI, WAM broker, scopes, and consent.
+- 2026-09-22T10:56:53-04:00 — See `docs/architecture.md` for MVP architecture; assigned MVP v1 issues: #4, #7, #8, #9.
