@@ -8,3 +8,5 @@
 ## Learnings
 
 <!-- Append new learnings below. Each entry is something lasting about the project. -->
+
+- 2026-09-22T12:40:46-04:00 — Shipped #6 via PR #18: NextEventsWidgetProvider lifecycle, COM activation, widget actions, and host/content/sign-in seams; reviewed and merged Alex's #7/#8 PR #17 plus Naomi's #11 PR #21, verifying the packaging CLSID stayed consistent with the provider.
