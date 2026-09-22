@@ -1,5 +1,5 @@
-using OutlookNextEvent.App.Cards;
 using OutlookNextEvent.Core.Calendar;
+using OutlookNextEvent.Core.Cards;
 
 namespace OutlookNextEvent.App.Widgets;
 

@@ -7,18 +7,68 @@
       "type": "TextBlock",
       "text": "Outlook Next Event",
       "weight": "Bolder",
-      "size": "Medium"
+      "size": "Medium",
+      "style": "heading"
     },
     {
       "type": "TextBlock",
       "text": "${status}",
+      "weight": "Bolder",
       "wrap": true
     },
     {
+      "type": "Container",
+      "$data": "${events}",
+      "items": [
+        {
+          "type": "ColumnSet",
+          "separator": true,
+          "spacing": "Small",
+          "columns": [
+            {
+              "type": "Column",
+              "width": "auto",
+              "items": [
+                {
+                  "type": "TextBlock",
+                  "text": "${time}",
+                  "weight": "Bolder",
+                  "wrap": true,
+                  "maxLines": 2
+                }
+              ]
+            },
+            {
+              "type": "Column",
+              "width": "stretch",
+              "items": [
+                {
+                  "type": "TextBlock",
+                  "text": "${title}",
+                  "weight": "Bolder",
+                  "wrap": true,
+                  "maxLines": 2
+                },
+                {
+                  "type": "TextBlock",
+                  "text": "${detail}",
+                  "isSubtle": true,
+                  "wrap": true,
+                  "maxLines": 1,
+                  "spacing": "None"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
       "type": "TextBlock",
-      "text": "${detail}",
+      "text": "${message}",
       "isSubtle": true,
-      "wrap": true
+      "wrap": true,
+      "maxLines": 2
     }
   ],
   "actions": [

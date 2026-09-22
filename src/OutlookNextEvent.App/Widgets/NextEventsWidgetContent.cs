@@ -1,7 +1,5 @@
-using System.Text.Json;
-using OutlookNextEvent.App.Cards;
 using OutlookNextEvent.Core.Calendar;
-using OutlookNextEvent.Core.Models;
+using OutlookNextEvent.Core.Cards;
 using OutlookNextEvent.Infrastructure.Settings;
 
 namespace OutlookNextEvent.App.Widgets;
@@ -27,8 +25,6 @@ public interface INextEventsWidgetContentProvider
 
 public sealed class NextEventsWidgetContentProvider : INextEventsWidgetContentProvider
 {
-    private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web);
-
     private readonly ICalendarService? _calendarService;
     private readonly CalendarSettings _calendarSettings;
     private readonly IEventShaper _eventShaper;
@@ -50,32 +46,16 @@ public sealed class NextEventsWidgetContentProvider : INextEventsWidgetContentPr
     }
 
     public WidgetUpdatePayload BuildLoading()
-        => Build("Chargement des événements…", "Le provider prépare la mise à jour du widget.", "loading", isPlaceholder: true);
+        => ToPayload("loading", _cardBuilder.BuildLoading());
 
     public WidgetUpdatePayload BuildConnectionRequired()
-        => Build(
-            "Connexion Outlook requise.",
-            "Utilisez le bouton Connecter Outlook. Le flux interactif s'ouvrira dans la fenêtre compagnon, pas dans le callback du widget.",
-            "connection-required",
-            isPlaceholder: true);
+        => ToPayload("connection-required", _cardBuilder.BuildSignedOut());
 
     public WidgetUpdatePayload BuildSignInRequested(bool companionWindowAvailable)
-        => Build(
-            companionWindowAvailable ? "Fenêtre de connexion ouverte." : "Connexion Outlook à finaliser.",
-            companionWindowAvailable
-                ? "Terminez la connexion dans la fenêtre compagnon, puis actualisez le widget."
-                : "Le déclencheur de fenêtre compagnon est prêt; l'intégration WinUI/HWND finale reste à brancher.",
-            "sign-in-requested",
-            isPlaceholder: true);
+        => ToPayload("sign-in-requested", _cardBuilder.BuildSignInRequested(companionWindowAvailable));
 
     public WidgetUpdatePayload BuildError(Exception exception, bool retainedLastSuccessfulState)
-        => Build(
-            retainedLastSuccessfulState
-                ? "Impossible d'actualiser; dernier état conservé."
-                : "Impossible de charger les événements.",
-            exception.Message,
-            "error",
-            isPlaceholder: true);
+        => ToPayload("error", _cardBuilder.BuildError(exception.Message, retainedLastSuccessfulState));
 
     public async Task<WidgetUpdatePayload> BuildContentAsync(CancellationToken cancellationToken = default)
     {
@@ -96,37 +76,11 @@ public sealed class NextEventsWidgetContentProvider : INextEventsWidgetContentPr
             ResolveTimeZone(_calendarSettings.TimeZoneId),
             windowEnd);
 
-        return Build(
-            shaped.IsEmpty ? "Aucun événement à venir." : $"{shaped.Count} événement(s) à venir.",
-            shaped.IsEmpty
-                ? "La fenêtre configurée ne contient aucun événement exploitable."
-                : $"{shaped.Events[0].Title} — {shaped.Events[0].RelativeStatus}",
-            "ready",
-            viewModel: shaped,
-            isPlaceholder: true);
+        return ToPayload("ready", _cardBuilder.BuildNextEvents(shaped));
     }
 
-    private WidgetUpdatePayload Build(
-        string status,
-        string detail,
-        string customState,
-        int? eventCount = null,
-        NextEventsViewModel? viewModel = null,
-        bool isPlaceholder = false)
-    {
-        var data = JsonSerializer.Serialize(new
-        {
-            status,
-            detail,
-            eventCount = viewModel?.Count ?? eventCount,
-            isEmpty = viewModel?.IsEmpty,
-            timeZoneId = viewModel?.TimeZoneId,
-            generatedAt = viewModel?.GeneratedAt,
-            events = viewModel?.Events
-        }, JsonOptions);
-
-        return new WidgetUpdatePayload(_cardBuilder.BuildPlaceholderCardJson(), data, customState, isPlaceholder);
-    }
+    private static WidgetUpdatePayload ToPayload(string customState, CardRenderResult card)
+        => new(card.TemplateJson, card.DataJson, customState, card.IsPlaceholderContent);
 
     private static TimeZoneInfo ResolveTimeZone(string timeZoneId)
     {
