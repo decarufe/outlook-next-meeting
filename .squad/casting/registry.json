@@ -1,3 +1,32 @@
 {
-  "agents": {}
+  "agents": {
+    "Holden": {
+      "persistent_name": "Holden",
+      "universe": "The Expanse",
+      "created_at": "2026-09-22T10:37:31-04:00",
+      "legacy_named": false,
+      "status": "active"
+    },
+    "Naomi": {
+      "persistent_name": "Naomi",
+      "universe": "The Expanse",
+      "created_at": "2026-09-22T10:37:31-04:00",
+      "legacy_named": false,
+      "status": "active"
+    },
+    "Alex": {
+      "persistent_name": "Alex",
+      "universe": "The Expanse",
+      "created_at": "2026-09-22T10:37:31-04:00",
+      "legacy_named": false,
+      "status": "active"
+    },
+    "Amos": {
+      "persistent_name": "Amos",
+      "universe": "The Expanse",
+      "created_at": "2026-09-22T10:37:31-04:00",
+      "legacy_named": false,
+      "status": "active"
+    }
+  }
 }

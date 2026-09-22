@@ -12,6 +12,14 @@
 
 | Name | Role | Charter | Status |
 |------|------|---------|--------|
+| Holden | Lead / Architecte | .squad/agents/holden/charter.md | 🏗️ Lead |
+| Naomi | Dev Widget / UI | .squad/agents/naomi/charter.md | 🔧 Dev |
+| Alex | Dev Intégration / Données | .squad/agents/alex/charter.md | 🔧 Dev |
+| Amos | Testeur / QA | .squad/agents/amos/charter.md | 🧪 Test |
+| Scribe | Session Logger | .squad/agents/scribe/charter.md | 📋 Scribe |
+| Ralph | Work Monitor | .squad/agents/ralph/charter.md | 🔄 Monitor |
+| Rai | RAI Reviewer | .squad/agents/Rai/charter.md | 🛡️ RAI |
+| Fact Checker | Fact Checker | .squad/agents/fact-checker/charter.md | 🔍 Verifier |
 
 
 ## Coding Agent

@@ -6,14 +6,15 @@ How to decide who handles what.
 
 | Work Type | Route To | Examples |
 |-----------|----------|----------|
-| {domain 1} | {Name} | {example tasks} |
-| {domain 2} | {Name} | {example tasks} |
-| {domain 3} | {Name} | {example tasks} |
-| Code review | {Name} | Review PRs, check quality, suggest improvements |
-| Testing | {Name} | Write tests, find edge cases, verify fixes |
-| Scope & priorities | {Name} | What to build next, trade-offs, decisions |
+| Architecture & scope | Holden | Widget provider design, MSIX strategy, task breakdown, trade-offs |
+| Widget UI / Adaptive Cards | Naomi | WinUI 3, Adaptive Cards, board integration, refresh & error states, packaging |
+| Graph & auth integration | Alex | Microsoft Graph calendar, MSAL/Entra auth, "next events" data model, timezones |
+| Testing | Amos | Unit/integration tests, edge cases (empty agenda, expired token, timezones), MSIX validation |
+| Code review | Holden | Review PRs, check quality, suggest improvements |
+| Scope & priorities | Holden | What to build next, trade-offs, decisions |
 | Session logging | Scribe | Automatic — never needs routing |
 | RAI review | Rai | Content safety, bias checks, credential detection, ethical review |
+| Verification / Devil's Advocate | Fact Checker | Verify claims (APIs, packages, versions), challenge design assumptions |
 
 ## Issue Routing
 

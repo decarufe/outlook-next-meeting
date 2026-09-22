@@ -1,4 +1,22 @@
 {
-  "universe_usage_history": [],
-  "assignment_cast_snapshots": {}
+  "universe_usage_history": [
+    {
+      "universe": "The Expanse",
+      "assignment_id": "outlooknextevent-2026-09-22",
+      "assigned_at": "2026-09-22T10:37:31-04:00"
+    }
+  ],
+  "assignment_cast_snapshots": {
+    "outlooknextevent-2026-09-22": {
+      "universe": "The Expanse",
+      "user_confirmed_override": true,
+      "note": "The Expanse hors allowlist par défaut — confirmé explicitement par l'utilisateur.",
+      "agents": {
+        "Holden": "Lead / Architecte",
+        "Naomi": "Dev Widget / UI",
+        "Alex": "Dev Intégration / Données",
+        "Amos": "Testeur / QA"
+      }
+    }
+  }
 }
