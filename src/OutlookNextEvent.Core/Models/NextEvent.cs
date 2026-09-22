@@ -7,4 +7,5 @@ public sealed record NextEvent(
     DateTimeOffset EndsAt,
     string? Location,
     bool IsAllDay,
-    Uri? JoinUrl);
+    Uri? JoinUrl,
+    bool IsCancelled = false);
