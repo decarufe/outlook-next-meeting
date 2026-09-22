@@ -1,8 +1,8 @@
 using System.Xml.Linq;
 using Xunit;
-using OutlookNextEvent.Core.Auth;
 using OutlookNextEvent.Infrastructure.Graph;
 using OutlookNextEvent.Infrastructure.Settings;
+using OutlookNextEvent.Testing.Auth;
 
 namespace OutlookNextEvent.App.Tests;
 
@@ -22,7 +22,7 @@ public sealed class AppScaffoldTests
     [Fact]
     public async Task GraphAccessTokenProvider_DelegatesToAuthService()
     {
-        var authService = new FakeAuthService("access-token");
+        var authService = FakeAuthService.WithToken("access-token");
         var provider = new GraphCalendarClient.AuthServiceAccessTokenProvider(authService);
 
         var token = await provider.GetAuthorizationTokenAsync(new Uri("https://graph.microsoft.com/v1.0/me/calendarView"));
@@ -123,23 +123,6 @@ public sealed class AppScaffoldTests
         Assert.Contains("Add-AppxPackage", documentation);
         Assert.Contains("com.microsoft.windows.widgets", documentation);
         Assert.Contains("8F3D7C7B-8D0D-41BF-8D9E-608A70D03E95", documentation);
-    }
-
-    private sealed class FakeAuthService(string token) : IAuthService
-    {
-        public int SilentCalls { get; private set; }
-
-        public Task<string> AcquireTokenSilentAsync(CancellationToken cancellationToken = default)
-        {
-            SilentCalls++;
-            return Task.FromResult(token);
-        }
-
-        public Task<string> SignInInteractiveAsync(nint parentWindowHandle, CancellationToken cancellationToken = default)
-            => Task.FromResult(token);
-
-        public Task SignOutAsync(CancellationToken cancellationToken = default)
-            => Task.CompletedTask;
     }
 
     private static string FindRepoRoot()

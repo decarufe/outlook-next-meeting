@@ -9,7 +9,7 @@ using System.Globalization;
 
 namespace OutlookNextEvent.Infrastructure.Graph;
 
-public sealed class GraphCalendarClient : ICalendarService
+public sealed class GraphCalendarClient : IGraphCalendarClient
 {
     private static readonly Uri GraphBaseUri = new("https://graph.microsoft.com/v1.0");
 

@@ -11,6 +11,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\OutlookNextEvent.App\OutlookNextEvent.App.csproj" />
     <ProjectReference Include="..\..\src\OutlookNextEvent.Infrastructure\OutlookNextEvent.Infrastructure.csproj" />
+    <ProjectReference Include="..\OutlookNextEvent.Testing\OutlookNextEvent.Testing.csproj" />
   </ItemGroup>
 
   <ItemGroup>

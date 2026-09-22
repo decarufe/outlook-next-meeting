@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\OutlookNextEvent.Core\OutlookNextEvent.Core.csproj" />
+    <ProjectReference Include="..\OutlookNextEvent.Testing\OutlookNextEvent.Testing.csproj" />
   </ItemGroup>
 
   <ItemGroup>
