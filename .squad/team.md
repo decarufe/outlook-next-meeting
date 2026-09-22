@@ -55,6 +55,13 @@
 - Performance-critical paths requiring benchmarking
 - Changes requiring cross-team discussion
 
+## Issue Source
+
+- **Repository:** decarufe/outlook-next-meeting
+- **Connected:** 2026-09-22
+- **Filters:** open issues, label routing via `squad` / `squad:{member}`
+- **Open issues at connect:** 0
+
 ## Project Context
 
 - **Project:** OutlookNextEvent
