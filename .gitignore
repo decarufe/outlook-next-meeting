@@ -16,8 +16,10 @@ obj/
 *.user
 
 # Local MSIX signing material (never commit real dev certs or private keys)
+certs/
 *.pfx
 *.cer
 *.pvk
+*.msix
 src/OutlookNextEvent.App/Package.local.props
 src/OutlookNextEvent.App/MsixPackages/

@@ -28,9 +28,28 @@ Si une machine headless ne contient pas le workload MSIX/Windows App SDK, `dotne
 
 ## Certificat de développement
 
-Ne jamais committer de certificat réel. Les fichiers `*.pfx`, `*.cer`, `*.pvk` et `src\OutlookNextEvent.App\Package.local.props` sont ignorés par git.
+Ne jamais committer de certificat réel ou de package généré. Le dossier `certs\`, les fichiers `*.pfx`, `*.cer`, `*.pvk`, `*.msix` et `src\OutlookNextEvent.App\Package.local.props` sont ignorés par git.
 
-Depuis la racine du dépôt :
+Option recommandée : générer le certificat, signer le MSIX et copier les artefacts installables à la racine avec le script du dépôt :
+
+```powershell
+.\build-package.ps1
+```
+
+Le script crée un mot de passe local jetable en mémoire si aucun `-CertificatePassword` n'est fourni, exporte `certs\OutlookNextEventDev.pfx` et `certs\OutlookNextEventDev.cer`, lance `dotnet publish`, puis copie :
+
+- `OutlookNextEvent_0.1.0.0_x64.msix` à la racine du dépôt;
+- `OutlookNextEventDev.cer` à la racine du dépôt.
+
+Ces fichiers générés restent ignorés par git.
+
+Exemple avec mot de passe fourni explicitement pour une session locale :
+
+```powershell
+.\build-package.ps1 -CertificatePassword "<mot-de-passe-local-jetable>"
+```
+
+Option manuelle depuis la racine du dépôt :
 
 ```powershell
 New-Item -ItemType Directory -Force -Path .\certs | Out-Null
@@ -39,9 +58,17 @@ $cert = New-SelfSignedCertificate `
   -Type Custom `
   -Subject "CN=OutlookNextEventDev" `
   -FriendlyName "OutlookNextEvent Dev MSIX" `
+  -KeyAlgorithm RSA `
+  -KeyLength 2048 `
+  -KeySpec Signature `
+  -HashAlgorithm SHA256 `
+  -KeyExportPolicy Exportable `
   -KeyUsage DigitalSignature `
   -CertStoreLocation "Cert:\CurrentUser\My" `
-  -TextExtension @("2.5.29.37={text}1.3.6.1.5.5.7.3.3")
+  -TextExtension @(
+    "2.5.29.37={text}1.3.6.1.5.5.7.3.3",
+    "2.5.29.19={text}"
+  )
 
 Export-PfxCertificate -Cert $cert -FilePath .\certs\OutlookNextEventDev.pfx -Password $password
 Export-Certificate -Cert $cert -FilePath .\certs\OutlookNextEventDev.cer
@@ -85,7 +112,8 @@ signtool sign /fd SHA256 /f .\certs\OutlookNextEventDev.pfx /p "<mot-de-passe-lo
 ## Installer et vérifier
 
 ```powershell
-Add-AppxPackage -Path "<chemin-du-msix>"
+Import-Certificate -FilePath .\OutlookNextEventDev.cer -CertStoreLocation Cert:\CurrentUser\TrustedPeople
+Add-AppxPackage -Path .\OutlookNextEvent_0.1.0.0_x64.msix
 Get-AppxPackage -Name Decarufe.OutlookNextEvent
 ```
 
