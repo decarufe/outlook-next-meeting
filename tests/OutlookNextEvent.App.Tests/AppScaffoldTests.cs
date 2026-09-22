@@ -30,6 +30,37 @@ public sealed class AppScaffoldTests
         Assert.Equal(1, authService.SilentCalls);
     }
 
+    [Fact]
+    public void WidgetTemplate_ExposesRefreshAndConnectActions()
+    {
+        var template = File.ReadAllText(Path.Combine(
+            FindRepoRoot(),
+            "src",
+            "OutlookNextEvent.App",
+            "Cards",
+            "next-events.template.json"));
+
+        Assert.Contains("\"verb\": \"refresh\"", template);
+        Assert.Contains("\"verb\": \"connect\"", template);
+        Assert.Contains("${status}", template);
+        Assert.Contains("${detail}", template);
+    }
+
+    [Fact]
+    public void WidgetProvider_DoesNotLaunchInteractiveMsalFromWidgetCallback()
+    {
+        var providerSource = File.ReadAllText(Path.Combine(
+            FindRepoRoot(),
+            "src",
+            "OutlookNextEvent.App",
+            "Widgets",
+            "NextEventsWidgetProvider.cs"));
+
+        Assert.Contains("ICompanionSignInLauncher", providerSource);
+        Assert.DoesNotContain("AcquireTokenInteractive", providerSource);
+        Assert.DoesNotContain("SignInInteractiveAsync", providerSource);
+    }
+
     private sealed class FakeAuthService(string token) : IAuthService
     {
         public int SilentCalls { get; private set; }
@@ -45,5 +76,21 @@ public sealed class AppScaffoldTests
 
         public Task SignOutAsync(CancellationToken cancellationToken = default)
             => Task.CompletedTask;
+    }
+
+    private static string FindRepoRoot()
+    {
+        var directory = new DirectoryInfo(AppContext.BaseDirectory);
+        while (directory is not null)
+        {
+            if (File.Exists(Path.Combine(directory.FullName, "OutlookNextEvent.sln")))
+            {
+                return directory.FullName;
+            }
+
+            directory = directory.Parent;
+        }
+
+        throw new InvalidOperationException("Unable to locate repository root.");
     }
 }
