@@ -95,6 +95,8 @@ Stratégie de rafraîchissement v1 :
   - suppression/oubli du compte en cache si consentement retiré, tenant changé ou erreur `invalid_grant`;
   - retour à la carte « Connexion requise ».
 
+État d'implémentation à documenter/suivre : l'infrastructure `AuthSettings`, `MsalAuthService` et `GraphCalendarClient` existe, mais la composition root WinUI ne lit pas encore une configuration Entra durable et n'injecte pas encore le client Graph dans le provider. La fenêtre compagnon de connexion reste aussi à brancher pour fournir un HWND à MSAL/WAM. Voir `docs\entra-configuration.md` et l'issue [#27](https://github.com/decarufe/outlook-next-meeting/issues/27).
+
 ## 7. Structure de dépôt proposée
 
 ```text

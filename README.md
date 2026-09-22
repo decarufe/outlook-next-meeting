@@ -16,13 +16,14 @@ OutlookNextEvent is a Windows 11 widget that displays the next Outlook calendar 
 - Visual Studio 2022 with .NET desktop development, Windows application development, Windows App SDK tooling, and MSIX packaging support.
 - .NET SDK 8.0 or newer. `global.json` pins the minimum to 8.0 and allows roll-forward to newer installed SDKs.
 - Developer Mode enabled for local MSIX sideloading.
-- An Entra ID public client app registration for later auth work:
-  - Mobile and desktop redirect URI: `ms-appx-web://Microsoft.AAD.BrokerPlugin/{ApplicationClientId}`
-  - Public client flows enabled
-  - Microsoft Graph delegated permission: `Calendars.Read`
-  - Configure the app's `AuthSettings.ClientId` with the Application (client) ID; no client secret is used or stored.
 
-The broker redirect URI is configurable through `AuthSettings.RedirectUri`. The default follows the current MSAL/WAM guidance above, but the exact packaged redirect URI must be confirmed in the Entra registration for the final MSIX identity. Token cache persistence is still a follow-up; this implementation uses MSAL's public client cache for the current process and exposes sign-out to remove cached accounts.
+## Microsoft Entra / Outlook configuration
+
+Outlook calendar access uses a Microsoft Entra **public client** app registration with Microsoft Graph delegated permission `Calendars.Read`. Do **not** create or store a client secret for this desktop/WAM flow.
+
+See `docs\entra-configuration.md` for the Entra portal steps, redirect URI, consent notes, and install/test checklist.
+
+Current limitation: the infrastructure classes for MSAL/WAM and Graph exist, but the packaged app does **not** yet read runtime Entra configuration, inject `GraphCalendarClient` into the widget provider, or launch the companion sign-in window. Creating the Entra app registration prepares the prerequisites, but the installed widget will not show real calendar events until the runtime wiring follow-up is implemented.
 
 ## Build
 
