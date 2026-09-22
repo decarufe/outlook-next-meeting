@@ -1,6 +1,7 @@
 using System.Text.Json;
 using OutlookNextEvent.App.Cards;
 using OutlookNextEvent.Core.Calendar;
+using OutlookNextEvent.Core.Models;
 using OutlookNextEvent.Infrastructure.Settings;
 
 namespace OutlookNextEvent.App.Widgets;
@@ -30,16 +31,22 @@ public sealed class NextEventsWidgetContentProvider : INextEventsWidgetContentPr
 
     private readonly ICalendarService? _calendarService;
     private readonly CalendarSettings _calendarSettings;
+    private readonly IEventShaper _eventShaper;
+    private readonly TimeProvider _timeProvider;
     private readonly CardBuilder _cardBuilder;
 
     public NextEventsWidgetContentProvider(
         CardBuilder cardBuilder,
         ICalendarService? calendarService = null,
-        CalendarSettings? calendarSettings = null)
+        CalendarSettings? calendarSettings = null,
+        IEventShaper? eventShaper = null,
+        TimeProvider? timeProvider = null)
     {
         _cardBuilder = cardBuilder ?? throw new ArgumentNullException(nameof(cardBuilder));
         _calendarService = calendarService;
         _calendarSettings = calendarSettings ?? new CalendarSettings();
+        _eventShaper = eventShaper ?? new EventShaper(timeProvider);
+        _timeProvider = timeProvider ?? TimeProvider.System;
     }
 
     public WidgetUpdatePayload BuildLoading()
@@ -77,17 +84,25 @@ public sealed class NextEventsWidgetContentProvider : INextEventsWidgetContentPr
             return BuildConnectionRequired();
         }
 
-        var now = DateTimeOffset.UtcNow;
+        var now = _timeProvider.GetUtcNow();
+        var windowEnd = now.AddDays(_calendarSettings.LookaheadDays);
         var events = await _calendarService
-            .GetNextEventsAsync(now, now.AddDays(_calendarSettings.LookaheadDays), _calendarSettings.MaxEvents, cancellationToken)
+            .GetNextEventsAsync(now, windowEnd, _calendarSettings.MaxEvents, cancellationToken)
             .ConfigureAwait(false);
+        var shaped = _eventShaper.ShapeNextEvents(
+            events,
+            now,
+            _calendarSettings.MaxEvents,
+            ResolveTimeZone(_calendarSettings.TimeZoneId),
+            windowEnd);
 
-        // #9 owns sorting/time-zone shaping and #10 owns final Adaptive Card rendering.
         return Build(
-            events.Count == 0 ? "Aucun événement à venir." : $"{events.Count} événement(s) chargé(s).",
-            "Rendu temporaire du provider; EventShaper et CardBuilder final se brancheront dans les issues #9/#10.",
+            shaped.IsEmpty ? "Aucun événement à venir." : $"{shaped.Count} événement(s) à venir.",
+            shaped.IsEmpty
+                ? "La fenêtre configurée ne contient aucun événement exploitable."
+                : $"{shaped.Events[0].Title} — {shaped.Events[0].RelativeStatus}",
             "ready",
-            eventCount: events.Count,
+            viewModel: shaped,
             isPlaceholder: true);
     }
 
@@ -96,15 +111,36 @@ public sealed class NextEventsWidgetContentProvider : INextEventsWidgetContentPr
         string detail,
         string customState,
         int? eventCount = null,
+        NextEventsViewModel? viewModel = null,
         bool isPlaceholder = false)
     {
         var data = JsonSerializer.Serialize(new
         {
             status,
             detail,
-            eventCount
+            eventCount = viewModel?.Count ?? eventCount,
+            isEmpty = viewModel?.IsEmpty,
+            timeZoneId = viewModel?.TimeZoneId,
+            generatedAt = viewModel?.GeneratedAt,
+            events = viewModel?.Events
         }, JsonOptions);
 
         return new WidgetUpdatePayload(_cardBuilder.BuildPlaceholderCardJson(), data, customState, isPlaceholder);
+    }
+
+    private static TimeZoneInfo ResolveTimeZone(string timeZoneId)
+    {
+        try
+        {
+            return TimeZoneInfo.FindSystemTimeZoneById(timeZoneId);
+        }
+        catch (TimeZoneNotFoundException)
+        {
+            return TimeZoneInfo.Local;
+        }
+        catch (InvalidTimeZoneException)
+        {
+            return TimeZoneInfo.Local;
+        }
     }
 }
