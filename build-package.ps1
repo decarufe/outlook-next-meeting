@@ -103,6 +103,10 @@ if ($signtool) {
 }
 
 Write-Host ""
-Write-Host "Trust the development certificate, then install the package:"
-Write-Host "Import-Certificate -FilePath `"$rootCerPath`" -CertStoreLocation Cert:\CurrentUser\TrustedPeople"
+Write-Host "Install the package from an elevated PowerShell prompt:"
+Write-Host ".\install-package.ps1"
+Write-Host ""
+Write-Host "Manual install commands (run PowerShell as Administrator):"
+Write-Host "Import-Certificate -FilePath `"$rootCerPath`" -CertStoreLocation Cert:\LocalMachine\Root"
+Write-Host "Import-Certificate -FilePath `"$rootCerPath`" -CertStoreLocation Cert:\LocalMachine\TrustedPeople"
 Write-Host "Add-AppxPackage -Path `"$rootMsixPath`""

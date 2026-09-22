@@ -72,7 +72,6 @@ $cert = New-SelfSignedCertificate `
 
 Export-PfxCertificate -Cert $cert -FilePath .\certs\OutlookNextEventDev.pfx -Password $password
 Export-Certificate -Cert $cert -FilePath .\certs\OutlookNextEventDev.cer
-Import-Certificate -FilePath .\certs\OutlookNextEventDev.cer -CertStoreLocation Cert:\CurrentUser\TrustedPeople
 ```
 
 Le sujet du certificat doit correspondre au publisher du manifeste : `CN=OutlookNextEventDev`.
@@ -111,10 +110,27 @@ signtool sign /fd SHA256 /f .\certs\OutlookNextEventDev.pfx /p "<mot-de-passe-lo
 
 ## Installer et vérifier
 
+Option recommandée : depuis un PowerShell lancé **en tant qu'administrateur**, exécuter le helper qui importe le certificat au bon niveau machine et installe le MSIX le plus récent à la racine :
+
 ```powershell
-Import-Certificate -FilePath .\OutlookNextEventDev.cer -CertStoreLocation Cert:\CurrentUser\TrustedPeople
+.\install-package.ps1
+```
+
+Commandes manuelles équivalentes, toujours depuis un PowerShell administrateur :
+
+```powershell
+Import-Certificate -FilePath .\OutlookNextEventDev.cer -CertStoreLocation Cert:\LocalMachine\Root
+Import-Certificate -FilePath .\OutlookNextEventDev.cer -CertStoreLocation Cert:\LocalMachine\TrustedPeople
 Add-AppxPackage -Path .\OutlookNextEvent_0.1.0.0_x64.msix
 Get-AppxPackage -Name Decarufe.OutlookNextEvent
+```
+
+L'erreur `0x800B010A` (`CERT_E_UNTRUSTEDROOT`) signifie que la racine auto-signée du certificat de développement n'est pas approuvée par Windows pour valider le package. Importer `OutlookNextEventDev.cer` dans `Cert:\LocalMachine\Root` corrige la confiance de la racine; `Cert:\LocalMachine\TrustedPeople` permet aussi d'approuver explicitement l'éditeur du package.
+
+Si vous ne voulez pas faire confiance à un certificat racine de développement, utilisez plutôt le mode loose/unpackaged en Developer Mode depuis la sortie de build :
+
+```powershell
+Add-AppxPackage -Register "<chemin-vers-la-sortie>\AppxManifest.xml"
 ```
 
 Après installation :
