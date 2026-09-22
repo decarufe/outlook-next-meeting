@@ -38,6 +38,35 @@ dotnet build .\src\OutlookNextEvent.Core\OutlookNextEvent.Core.csproj
 dotnet test .\tests\OutlookNextEvent.Core.Tests\OutlookNextEvent.Core.Tests.csproj
 ```
 
-## Sideload
+## Installation / Sideload
 
-Use Visual Studio on Windows 11 with the Windows App SDK/MSIX tooling installed to package and deploy `src\OutlookNextEvent.App`. The widget manifest registers a single `NextEventsWidget` provider via `windows.comServer` and `windows.appExtension` using COM `CreateInstance`.
+Prerequisites:
+
+- Windows 11 with third-party widget support.
+- Developer Mode enabled.
+- Windows App SDK/MSIX tooling installed for package generation.
+
+Build the signed local MSIX package from the repository root:
+
+```powershell
+.\build-package.ps1
+```
+
+This creates root-level sideload artifacts such as `OutlookNextEvent_0.1.0.0_x64.msix` and `OutlookNextEventDev.cer`. To install them, open PowerShell **as Administrator** and run the one-shot helper:
+
+```powershell
+.\install-package.ps1
+```
+
+Manual equivalent, also from an elevated PowerShell:
+
+```powershell
+Import-Certificate -FilePath .\OutlookNextEventDev.cer -CertStoreLocation Cert:\LocalMachine\Root
+Import-Certificate -FilePath .\OutlookNextEventDev.cer -CertStoreLocation Cert:\LocalMachine\TrustedPeople
+Add-AppxPackage -Path .\OutlookNextEvent_0.1.0.0_x64.msix
+Get-AppxPackage -Name Decarufe.OutlookNextEvent
+```
+
+If `Add-AppxPackage` fails with `0x800B010A` / `CERT_E_UNTRUSTEDROOT`, the self-signed development root is not trusted. Re-run the `LocalMachine\Root` import from an elevated PowerShell, or use `.\install-package.ps1`.
+
+See `docs\packaging.md` for full packaging, trust, verification, and loose Developer Mode registration details.
