@@ -1,4 +1,5 @@
 using OutlookNextEvent.App.Cards;
+using OutlookNextEvent.Core.Calendar;
 
 namespace OutlookNextEvent.App.Widgets;
 
@@ -23,6 +24,6 @@ public sealed class NextEventsWidgetProviderDependencies
     public static NextEventsWidgetProviderDependencies CreateDefault()
         => new(
             new WidgetManagerHost(),
-            new NextEventsWidgetContentProvider(new CardBuilder()),
+            new NextEventsWidgetContentProvider(new CardBuilder(), eventShaper: new EventShaper()),
             new CompanionSignInLauncher());
 }
