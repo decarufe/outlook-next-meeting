@@ -20,6 +20,9 @@ OutlookNextEvent is a Windows 11 widget that displays the next Outlook calendar 
   - Mobile and desktop redirect URI: `ms-appx-web://Microsoft.AAD.BrokerPlugin/{ApplicationClientId}`
   - Public client flows enabled
   - Microsoft Graph delegated permission: `Calendars.Read`
+  - Configure the app's `AuthSettings.ClientId` with the Application (client) ID; no client secret is used or stored.
+
+The broker redirect URI is configurable through `AuthSettings.RedirectUri`. The default follows the current MSAL/WAM guidance above, but the exact packaged redirect URI must be confirmed in the Entra registration for the final MSIX identity. Token cache persistence is still a follow-up; this implementation uses MSAL's public client cache for the current process and exposes sign-out to remove cached accounts.
 
 ## Build
 
