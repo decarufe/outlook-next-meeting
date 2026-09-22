@@ -1,0 +1,10 @@
+<Window
+    x:Class="OutlookNextEvent.App.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <StackPanel Padding="24" Spacing="12">
+        <TextBlock Text="Outlook Next Event" FontSize="24" FontWeight="SemiBold" />
+        <TextBlock Text="Connectez Outlook depuis cette fenêtre compagnon pour fournir un HWND au broker MSAL/WAM." TextWrapping="Wrap" />
+        <Button Content="Connecter Outlook" IsEnabled="False" />
+    </StackPanel>
+</Window>

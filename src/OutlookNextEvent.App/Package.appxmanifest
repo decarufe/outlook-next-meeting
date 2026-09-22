@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Package
+  xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
+  xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
+  xmlns:uap3="http://schemas.microsoft.com/appx/manifest/uap/windows10/3"
+  xmlns:com="http://schemas.microsoft.com/appx/manifest/com/windows10"
+  IgnorableNamespaces="uap uap3 com">
+
+  <Identity Name="Decarufe.OutlookNextEvent" Publisher="CN=OutlookNextEventDev" Version="0.1.0.0" />
+
+  <Properties>
+    <DisplayName>Outlook Next Event</DisplayName>
+    <PublisherDisplayName>Decarufe</PublisherDisplayName>
+    <Logo>Assets\StoreLogo.png</Logo>
+  </Properties>
+
+  <Dependencies>
+    <TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.19041.0" MaxVersionTested="10.0.26100.0" />
+  </Dependencies>
+
+  <Resources>
+    <Resource Language="en-us" />
+  </Resources>
+
+  <Applications>
+    <Application
+      Id="App"
+      Executable="$targetnametoken$.exe"
+      EntryPoint="Windows.FullTrustApplication">
+
+      <uap:VisualElements
+        DisplayName="Outlook Next Event"
+        Description="Affiche les prochains événements Outlook dans Windows Widgets"
+        Square44x44Logo="Assets\Square44x44Logo.png"
+        Square150x150Logo="Assets\Square150x150Logo.png"
+        BackgroundColor="transparent" />
+
+      <Extensions>
+        <com:Extension Category="windows.comServer">
+          <com:ComServer>
+            <com:ExeServer
+              Executable="$targetnametoken$.exe"
+              DisplayName="Outlook Next Event Widget Provider">
+              <com:Class
+                Id="8F3D7C7B-8D0D-41BF-8D9E-608A70D03E95"
+                DisplayName="Outlook Next Event Widget Provider" />
+            </com:ExeServer>
+          </com:ComServer>
+        </com:Extension>
+
+        <uap3:Extension Category="windows.appExtension">
+          <uap3:AppExtension
+            Name="com.microsoft.windows.widgets"
+            DisplayName="Outlook Next Event"
+            Id="OutlookNextEventWidgetProvider"
+            PublicFolder="Public">
+            <uap3:Properties>
+              <WidgetProvider>
+                <ProviderIcons>
+                  <Icon Path="Assets\StoreLogo.png" />
+                </ProviderIcons>
+                <Activation>
+                  <CreateInstance ClassId="8F3D7C7B-8D0D-41BF-8D9E-608A70D03E95" />
+                </Activation>
+                <Definitions>
+                  <Definition
+                    Id="NextEventsWidget"
+                    DisplayName="Prochains événements Outlook"
+                    Description="Affiche vos prochains événements du calendrier Outlook."
+                    AllowMultiple="false">
+                    <Capabilities>
+                      <Capability>
+                        <Size Name="small" />
+                      </Capability>
+                      <Capability>
+                        <Size Name="medium" />
+                      </Capability>
+                      <Capability>
+                        <Size Name="large" />
+                      </Capability>
+                    </Capabilities>
+                    <ThemeResources>
+                      <Icons>
+                        <Icon Path="ProviderAssets\NextEventsWidget.png" />
+                      </Icons>
+                      <Screenshots>
+                        <Screenshot
+                          Path="ProviderAssets\NextEventsWidgetScreenshot.png"
+                          DisplayAltText="Aperçu du widget Prochains événements Outlook" />
+                      </Screenshots>
+                    </ThemeResources>
+                  </Definition>
+                </Definitions>
+              </WidgetProvider>
+            </uap3:Properties>
+          </uap3:AppExtension>
+        </uap3:Extension>
+      </Extensions>
+    </Application>
+  </Applications>
+
+  <Capabilities>
+    <Capability Name="internetClient" />
+  </Capabilities>
+</Package>

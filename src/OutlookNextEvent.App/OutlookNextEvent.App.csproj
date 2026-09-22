@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
+    <TargetPlatformMinVersion>10.0.19041.0</TargetPlatformMinVersion>
+    <RootNamespace>OutlookNextEvent.App</RootNamespace>
+    <ApplicationManifest>Package.appxmanifest</ApplicationManifest>
+    <UseWinUI>true</UseWinUI>
+    <EnableMsixTooling>true</EnableMsixTooling>
+    <WindowsPackageType>MSIX</WindowsPackageType>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.WindowsAppSDK" Version="2.5.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\OutlookNextEvent.Core\OutlookNextEvent.Core.csproj" />
+    <ProjectReference Include="..\OutlookNextEvent.Infrastructure\OutlookNextEvent.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Cards\next-events.template.json" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="Assets\*.png" />
+    <Content Include="ProviderAssets\*.png" />
+  </ItemGroup>
+</Project>
